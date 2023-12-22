@@ -43,10 +43,10 @@ const Navbar = () => {
         <>
           <div className="flex items-center gap-2">
             <div>
-              <img className="w-12 h-12 rounded-full" src={user?.avatarUrl} />
+              <img className="w-12 h-12 rounded-full" src={user?.photoURL} />
             </div>
             <div>
-              <h4>{user?.name}</h4>
+              <h4>{user?.displayName}</h4>
             </div>
           </div>
 
