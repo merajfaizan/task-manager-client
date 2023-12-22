@@ -6,6 +6,7 @@ import Register from "../pages/Register/Register";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import PrivateRoute from "./PrivateRoute";
 import CreateTask from "../pages/CreateTask/CreateTask";
+import EditTask from "../pages/EditTask/EditTask";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <CreateTask />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/edit-task/:tid",
+        element: (
+          <PrivateRoute>
+            <EditTask />
           </PrivateRoute>
         ),
       },

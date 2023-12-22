@@ -1,43 +1,78 @@
-import { useForm } from "react-hook-form";
+/* eslint-disable no-unused-vars */
+import { set, useForm } from "react-hook-form";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import swal from "sweetalert";
 import { v4 as uuidv4 } from "uuid";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import ToastComponent from "../../components/ToastComponent";
 
-const CreateTask = () => {
-  const { register, handleSubmit } = useForm();
-  const { user } = useAuth();
+const EditTask = () => {
+  const {
+    user: { email },
+  } = useAuth();
+  const { tid } = useParams();
+  const { register, handleSubmit, setValue } = useForm();
   const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
+  const [task, setTask] = useState({});
+  console.log(task);
 
-  const onSubmit = (data) => {
-    const tid = uuidv4();
-    const task = {
-      tid: tid,
+  useEffect(() => {
+    const fetchTaskData = async () => {
+      try {
+        const response = await axiosPublic.get(`/tasks/user/${email}/${tid}`);
+        const { success, task } = response.data;
+        setTask(task);
+
+        if (success) {
+          // Set default values for form fields
+          setValue("title", task.title);
+          setValue("description", task.description);
+          setValue("priority", task.priority);
+          setValue("deadline", task.deadline);
+        } else {
+          toast.error("Task not found");
+        }
+      } catch (error) {
+        toast.error("Error fetching task data:", error);
+      }
+    };
+
+    fetchTaskData();
+  }, [tid, axiosPublic, email, setValue]);
+
+  // Handle form submission
+  const onSubmit = async (data) => {
+    const modifiedTask = {
+      ...task,
       title: data.title,
       description: data.description,
       priority: data.priority,
       deadline: data.deadline,
-      status: "todo",
     };
-    axiosPublic
-      .post(`/tasks/create/${user.email}`, task)
-      .then((res) => {
-        if (res.data.modifiedCount > 0) {
-          swal("Good job!", "Task created successfully", "success");
-          navigate("/dashboard");
-        } else {
-          swal("Oops!", "Something went wrong, try again", "error");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const response = await axiosPublic.put(
+        `/tasks/user/${email}/${tid}`,
+        modifiedTask
+      );
+      if (response.data.success) {
+        swal("Success", "Task updated successfully", "success");
+        // Redirect to the task list page or any other page
+        navigate("/dashboard");
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
   };
 
   return (
     <div className="flex justify-center bg-slate-100">
+      <ToastComponent />
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-96 rounded-lg mx-auto flex flex-col gap-4 p-4 m-4 bg-white"
@@ -100,11 +135,11 @@ const CreateTask = () => {
         </label>
 
         <button className="btn bg-teal-500 text-white" type="submit">
-          Create Task
+          Edit Task
         </button>
       </form>
     </div>
   );
 };
 
-export default CreateTask;
+export default EditTask;
