@@ -1,11 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 const Navbar = () => {
   const { user, logOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogOut = () => {
     logOut()
-      .then(() => {})
+      .then(() => {
+        navigate("/");
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -19,7 +22,7 @@ const Navbar = () => {
         <Link to={"/dashboard"}>Dashboard</Link>
       </li>
       <li>
-        <Link to={"#Blog"}>Blog</Link>
+        <Link to={"#Blogs"}>Blogs</Link>
       </li>
       <li>
         <Link to={"#About"}>About</Link>
