@@ -5,7 +5,9 @@ import { MdOutlineDashboard } from "react-icons/md";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import Task from "../../components/task";
+import TodoSection from "../../components/TodoSection";
+import OnGoingSection from "../../components/OnGoingSection";
+import CompletedSection from "../../components/CompletedSection";
 
 const Dashboard = () => {
   const { user } = useGetUser();
@@ -45,36 +47,9 @@ const Dashboard = () => {
               Welcome to Dashboard
             </h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 ">
-              <div>
-                <h3 className="text-center bg-yellow-300 border-2 border-yellow-300 p-4">
-                  To-Do List
-                </h3>
-                <div className="border-2 border-yellow-300 min-h-screen flex flex-col gap-5 p-2">
-                  {todo?.map((task) => {
-                    return <Task key={task?.tid} task={task} setRefetch={setRefetch} />;
-                  })}
-                </div>
-              </div>
-              <div>
-                <h3 className="text-center bg-blue-300 border-2 border-blue-300 p-4">
-                  On-going List
-                </h3>
-                <div className="border-2 border-blue-300 min-h-screen flex flex-col  gap-5 p-2">
-                  {inProgress?.map((task) => {
-                    return <Task key={task?.tid} task={task} setRefetch={setRefetch} />;
-                  })}
-                </div>
-              </div>
-              <div>
-                <h3 className="text-center bg-green-300 border-2 border-green-300 p-4">
-                  Completed List
-                </h3>
-                <div className="border-2 border-green-300 min-h-screen flex flex-col gap-5 p-2">
-                  {completed?.map((task) => {
-                    return <Task key={task?.tid} task={task} setRefetch={setRefetch} />;
-                  })}
-                </div>
-              </div>
+              <TodoSection todo={todo} setRefetch={setRefetch} />
+              <OnGoingSection inProgress={inProgress} setRefetch={setRefetch} />
+              <CompletedSection completed={completed} setRefetch={setRefetch} />
             </div>
           </div>
         </div>

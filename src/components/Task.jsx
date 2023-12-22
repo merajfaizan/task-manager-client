@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import { ToastContainer, toast } from "react-toastify";
+import { useDrag } from "react-dnd";
 
 const Task = ({ task, setRefetch }) => {
   const {
@@ -27,8 +28,16 @@ const Task = ({ task, setRefetch }) => {
     }
   };
 
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: "task",
+    item: task,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
+
   return (
-    <div className="bg-blue-50 p-2 rounded-sm">
+    <div ref={drag} className="bg-blue-50 p-2 rounded-sm cursor-grab">
       <ToastContainer />
       <h1 className="font-medium font-lg">{task?.title}</h1>
       <p>{task?.description}</p>

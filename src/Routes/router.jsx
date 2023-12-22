@@ -7,6 +7,8 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import PrivateRoute from "./PrivateRoute";
 import CreateTask from "../pages/CreateTask/CreateTask";
 import EditTask from "../pages/EditTask/EditTask";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +31,9 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: (
           <PrivateRoute>
-            <Dashboard />
+            <DndProvider backend={HTML5Backend}>
+              <Dashboard />
+            </DndProvider>
           </PrivateRoute>
         ),
       },
